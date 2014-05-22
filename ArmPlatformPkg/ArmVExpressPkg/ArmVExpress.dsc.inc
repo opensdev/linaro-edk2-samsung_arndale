@@ -390,6 +390,11 @@
   # Shell.
   gEfiShellPkgTokenSpaceGuid.PcdShellLibAutoInitialize|FALSE
 
+!ifdef EDK2_ENABLE_SMSC_91X
+  # Ethernet (SMSC 91C111)
+  gEmbeddedTokenSpaceGuid.PcdLan91xDxeBaseAddress|0x1A000000
+!endif
+
 [Components.common]
   MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
 
@@ -411,6 +416,10 @@
   MdeModulePkg/Universal/Network/Udp4Dxe/Udp4Dxe.inf
   MdeModulePkg/Universal/Network/UefiPxeBcDxe/UefiPxeBcDxe.inf
   MdeModulePkg/Universal/Network/IScsiDxe/IScsiDxe.inf
+!ifdef EDK2_ENABLE_SMSC_91X
+  # SMSC LAN 91C111
+  EmbeddedPkg/Drivers/LAN91xDxe/LAN91xDxe.inf
+!endif
 
   # ISP1761 USB OTG Controller
   EmbeddedPkg/Drivers/Isp1761UsbDxe/Isp1761UsbDxe.inf
