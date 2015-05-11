@@ -199,6 +199,10 @@
   #
   gEmbeddedTokenSpaceGuid.PcdFdtDevicePaths|L"                                                                                                                                "
 
+  # Not all Juno platforms support PCI. This dynamic PCD disables or enable
+  # PCI support.
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPciDisableBusEnumeration|TRUE
+
 ################################################################################
 #
 # Components Section - list of all EDK II Modules needed by this Platform
