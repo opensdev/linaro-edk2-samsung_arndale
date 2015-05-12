@@ -194,15 +194,6 @@
   # Set tick frequency value to 100Mhz
   gArmTokenSpaceGuid.PcdArmArchTimerFreqInHz|100000000
 
-[PcdsDynamicDefault.common]
-  #
-  # The size of a dynamic PCD of the (VOID*) type can not be increased at run
-  # time from its size at build time. Set the "PcdFdtDevicePaths" PCD to a 128
-  # character "empty" string, to allow to be able to set FDT text device paths
-  # up to 128 characters long.
-  #
-  gEmbeddedTokenSpaceGuid.PcdFdtDevicePaths|L"                                                                                                                                "
-
 ################################################################################
 #
 # Components Section - list of all EDK II Modules needed by this Platform
