@@ -317,5 +317,4 @@
 !else
   ArmPlatformPkg/Bds/Bds.inf
 !endif
-  MdeModulePkg/Universal/Fdt/FdtTableDxe/FdtTableDxe.inf
 
