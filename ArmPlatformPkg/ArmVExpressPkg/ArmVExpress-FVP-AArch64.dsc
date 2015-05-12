@@ -183,8 +183,11 @@
   #
   gArmPlatformTokenSpaceGuid.PcdDefaultBootDescription|L"Linux from SemiHosting"
   gArmPlatformTokenSpaceGuid.PcdDefaultBootDevicePath|L"VenHw(C5B9C74A-6D72-4719-99AB-C59F199091EB)/Image"
-  gArmPlatformTokenSpaceGuid.PcdDefaultBootInitrdPath|L"VenHw(C5B9C74A-6D72-4719-99AB-C59F199091EB)/filesystem.cpio.gz"
-  gArmPlatformTokenSpaceGuid.PcdDefaultBootArgument|L"console=ttyAMA0 earlycon=pl011,0x1c090000 debug user_debug=31 loglevel=9"
+  gArmPlatformTokenSpaceGuid.PcdDefaultBootInitrdPath|L"VenHw(C5B9C74A-6D72-4719-99AB-C59F199091EB)/ramdisk.img"
+  gArmPlatformTokenSpaceGuid.PcdDefaultBootArgument|L"console=ttyAMA0 earlycon=pl011,0x1c090000 debug user_debug=31 loglevel=9 root=/dev/vda2"
+  gEmbeddedTokenSpaceGuid.PcdFdtDevicePaths|L"VenHw(C5B9C74A-6D72-4719-99AB-C59F199091EB)/fdt.dtb"
+
+
   # Use EFI Stub
   gArmPlatformTokenSpaceGuid.PcdDefaultBootType|0
 
