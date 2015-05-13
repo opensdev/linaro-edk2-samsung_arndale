@@ -23,6 +23,7 @@
 [Sources.common]
   ArmFvpDxe.c
   ArmVExpressCommon.c
+  DramBlockIo.c
 
 [Sources.ARM]
   Arm/ArmFvpDxeArm.c
@@ -58,6 +59,8 @@
 
 [FixedPcd]
   gArmVExpressTokenSpaceGuid.PcdFvpFdtDevicePathsBase
+  gArmTokenSpaceGuid.PcdSystemMemoryBase
+  gArmTokenSpaceGuid.PcdSystemMemorySize
 
 [FixedPcd.ARM]
   gArmVExpressTokenSpaceGuid.PcdFdtVExpressFvpA9x4
