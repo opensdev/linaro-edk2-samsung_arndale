@@ -66,6 +66,10 @@ ArmFvpInitialise (
   Status = gBS->InstallProtocolInterface (&ImageHandle,
                  &gEfiDevicePathProtocolGuid, EFI_NATIVE_INTERFACE,
                  &mVirtioBlockDevicePath);
+
+  Status = InitDramBlockIo ();
+  ASSERT_EFI_ERROR (Status);
+
   if (EFI_ERROR (Status)) {
     return Status;
   }

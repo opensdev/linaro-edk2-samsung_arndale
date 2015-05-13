@@ -23,6 +23,8 @@
 [Sources.common]
   ArmFvpDxe.c
   ArmVExpressCommon.c
+  DramBlockIo.c
+
 
 [Sources.ARM]
   Arm/ArmFvpDxeArm.c
@@ -52,8 +54,13 @@
 [LibraryClasses.AARCH64]
   ArmGicLib
 
+[Protocols]
+  gEfiBlockIoProtocolGuid
+
 [FixedPcd]
   gArmVExpressTokenSpaceGuid.PcdFvpFdtDevicePathsBase
+  gArmTokenSpaceGuid.PcdSystemMemoryBase
+  gArmTokenSpaceGuid.PcdSystemMemorySize
 
 [Pcd]
   gEmbeddedTokenSpaceGuid.PcdFdtDevicePaths
