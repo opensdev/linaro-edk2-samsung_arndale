@@ -96,4 +96,9 @@ ArmVExpressGetPlatform (
   OUT CONST ARM_VEXPRESS_PLATFORM** Platform
   );
 
+EFI_STATUS
+InitDramBlockIo (
+  VOID
+  );
+
 #endif // __ARM_VEXPRESS_INTERNAL_H__

@@ -70,6 +70,9 @@ ArmFvpInitialise (
     return Status;
   }
 
+  Status = InitDramBlockIo ();
+  ASSERT_EFI_ERROR (Status);
+
   // Declare the Virtio BlockIo device
   Status = VirtioMmioInstallDevice (ARM_FVP_BASE_VIRTIO_BLOCK_BASE, ImageHandle);
   if (EFI_ERROR (Status)) {
