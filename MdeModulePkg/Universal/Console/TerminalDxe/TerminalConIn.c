@@ -1559,8 +1559,8 @@ UnicodeToEfiKey (
     }
 
     if (UnicodeChar == DEL) {
-      Key.ScanCode    = SCAN_DELETE;
-      Key.UnicodeChar = 0;
+      Key.ScanCode    = SCAN_NULL;
+      Key.UnicodeChar = CHAR_BACKSPACE;
     } else {
       Key.ScanCode    = SCAN_NULL;
       Key.UnicodeChar = UnicodeChar;
