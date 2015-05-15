@@ -75,6 +75,7 @@
   gArmJunoTokenSpaceGuid.PcdJunoR1A57x2FdtDevicePath
   gArmJunoTokenSpaceGuid.PcdJunoR1A57x2A53x4FdtDevicePath
 
+  gArmPlatformTokenSpaceGuid.PcdDefaultBootDescription
   gArmPlatformTokenSpaceGuid.PcdDefaultBootDevicePath
   gArmPlatformTokenSpaceGuid.PcdDefaultBootArgument
 

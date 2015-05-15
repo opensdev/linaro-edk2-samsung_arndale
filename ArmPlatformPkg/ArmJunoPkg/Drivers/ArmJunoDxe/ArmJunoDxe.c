@@ -381,6 +381,7 @@ SetJunoR1DefaultBootEntries (
   EFI_DEVICE_PATH*                    BootDevicePath;
   UINT32                              SysPciGbeL;
   UINT32                              SysPciGbeH;
+  CHAR16*                             DefaultBootDescription;
   CHAR16*                             DefaultBootArgument;
   CHAR16*                             DefaultBootArgument1;
   UINTN                               DefaultBootArgument1Size;
@@ -446,12 +447,18 @@ SetJunoR1DefaultBootEntries (
     (SysPciGbeL >> 8 ) & 0xFF, (SysPciGbeL      ) & 0xFF
     );
 
+  DefaultBootDescription = NULL;
+  DefaultBootDescription = (CHAR16*)PcdGetPtr (PcdDefaultBootDescription);
+  if (DefaultBootDescription == NULL) {
+    goto Error;
+  }
+
   //
   // Create Boot0001 environment variable
   //
   Status = BootOptionCreate (
              L"Boot0001", LOAD_OPTION_ACTIVE | LOAD_OPTION_CATEGORY_BOOT,
-             L"Linux with A57x2", BootDevicePath,
+             DefaultBootDescription, BootDevicePath,
              (UINT8*)DefaultBootArgument1, DefaultBootArgument1Size
              );
   if (EFI_ERROR (Status)) {
