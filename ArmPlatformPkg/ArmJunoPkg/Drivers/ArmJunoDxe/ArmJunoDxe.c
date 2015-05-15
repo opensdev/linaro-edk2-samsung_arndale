@@ -376,7 +376,6 @@ SetJunoR1DefaultBootEntries (
   )
 {
   EFI_STATUS                          Status;
-  CONST CHAR16*                       ExtraBootArgument = L" dtb=r1a57a53.dtb";
   UINTN                               Size;
   EFI_DEVICE_PATH_FROM_TEXT_PROTOCOL  *EfiDevicePathFromTextProtocol;
   EFI_DEVICE_PATH*                    BootDevicePath;
@@ -385,13 +384,10 @@ SetJunoR1DefaultBootEntries (
   CHAR16*                             DefaultBootArgument;
   CHAR16*                             DefaultBootArgument1;
   UINTN                               DefaultBootArgument1Size;
-  CHAR16*                             DefaultBootArgument2;
-  UINTN                               DefaultBootArgument2Size;
-  UINT16                              BootOrder[2];
+  UINT16                              BootOrder[1];
 
   BootDevicePath       = NULL;
   DefaultBootArgument1 = NULL;
-  DefaultBootArgument2 = NULL;
 
   //
   // Because the driver has a dependency on gEfiVariable(Write)ArchProtocolGuid
@@ -430,15 +426,10 @@ SetJunoR1DefaultBootEntries (
   DefaultBootArgument = (CHAR16*)PcdGetPtr (PcdDefaultBootArgument);
   DefaultBootArgument1Size = StrSize (DefaultBootArgument) +
                              (SKY2_MAC_ADDRESS_BOOTARG_LEN * sizeof (CHAR16));
-  DefaultBootArgument2Size = DefaultBootArgument1Size + StrSize (ExtraBootArgument);
 
   Status = EFI_OUT_OF_RESOURCES;
   DefaultBootArgument1 = AllocatePool (DefaultBootArgument1Size);
   if (DefaultBootArgument1 == NULL) {
-    goto Error;
-  }
-  DefaultBootArgument2 = AllocatePool (DefaultBootArgument2Size);
-  if (DefaultBootArgument2 == NULL) {
     goto Error;
   }
 
@@ -455,13 +446,6 @@ SetJunoR1DefaultBootEntries (
     (SysPciGbeL >> 8 ) & 0xFF, (SysPciGbeL      ) & 0xFF
     );
 
-  CopyMem (DefaultBootArgument2, DefaultBootArgument1, DefaultBootArgument1Size);
-  CopyMem (
-    (UINT8*)DefaultBootArgument2 + DefaultBootArgument1Size - sizeof (CHAR16),
-    ExtraBootArgument,
-    StrSize (ExtraBootArgument)
-  );
-
   //
   // Create Boot0001 environment variable
   //
@@ -476,23 +460,9 @@ SetJunoR1DefaultBootEntries (
   }
 
   //
-  // Create Boot0002 environment variable
-  //
-  Status = BootOptionCreate (
-             L"Boot0002", LOAD_OPTION_ACTIVE | LOAD_OPTION_CATEGORY_BOOT,
-             L"Linux with A57x2_A53x4", BootDevicePath,
-             (UINT8*)DefaultBootArgument2, DefaultBootArgument2Size
-             );
-  if (EFI_ERROR (Status)) {
-    ASSERT_EFI_ERROR (Status);
-    goto Error;
-  }
-
-  //
   // Add the new Boot Index to the list
   //
   BootOrder[0] = 1; // Boot0001
-  BootOrder[1] = 2; // Boot0002
   Status = gRT->SetVariable (
                   L"BootOrder",
                   &gEfiGlobalVariableGuid,
@@ -509,9 +479,6 @@ Error:
   }
   if (DefaultBootArgument1 != NULL) {
     FreePool (DefaultBootArgument1);
-  }
-  if (DefaultBootArgument2 != NULL) {
-    FreePool (DefaultBootArgument2);
   }
 
   if (EFI_ERROR (Status)) {
