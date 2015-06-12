@@ -177,11 +177,26 @@
   #
   # ARM OS Loader
   #
-  gArmPlatformTokenSpaceGuid.PcdDefaultBootDescription|L"Linux from DRAM"
-  gArmPlatformTokenSpaceGuid.PcdDefaultBootDevicePath|L"VenHw(30F57E4A-69CE-4FB7-B7A1-4C7CE49D57A6)/MemoryMapped(0x0,0x80080000,0x81000000)"
-  gEmbeddedTokenSpaceGuid.PcdFdtDevicePaths|L"VenHw(30F57E4A-69CE-4FB7-B7A1-4C7CE49D57A6)/MemoryMapped(0x0,0x83000000,0x83200000)"
-  gArmPlatformTokenSpaceGuid.PcdDefaultBootArgument|L"console=ttyAMA0 earlyprintk=pl011,0x1c090000 debug user_debug=31 androidboot.hardware=fvpbase loglevel=9 root=/dev/vda2"
-  gArmPlatformTokenSpaceGuid.PcdDefaultBootType|2
+!ifdef ARM_FVP_BOOT_FROM_SEMIHOSTING
+  gArmPlatformTokenSpaceGuid.PcdDefaultBootDescription|L"Linaro Image and fdt.dtb from semihosting"
+  gArmPlatformTokenSpaceGuid.PcdDefaultBootDevicePath|L"VenHw(C5B9C74A-6D72-4719-99AB-C59F199091EB)/Image"
+  gArmPlatformTokenSpaceGuid.PcdDefaultBootArgument|L"dtb=fdt.dtb console=ttyAMA0 earlyprintk=pl011,0x1c090000 debug user_debug=31 loglevel=9 androidboot.hardware=fvpbase root=/dev/vda2"
+  gArmPlatformTokenSpaceGuid.PcdDefaultBootType|0
+!else
+  !ifdef ARM_FVP_BOOT_ANDROID_FROM_SEMIHOSTING
+    gArmPlatformTokenSpaceGuid.PcdDefaultBootDescription|L"Linaro Android kernel, fdt.dtb and ramdisk.img from semihosting"
+    gArmPlatformTokenSpaceGuid.PcdDefaultBootDevicePath|L"VenHw(C5B9C74A-6D72-4719-99AB-C59F199091EB)/kernel"
+    gArmPlatformTokenSpaceGuid.PcdDefaultBootArgument|L"dtb=fdt.dtb initrd=ramdisk.img console=ttyAMA0 earlyprintk=pl011,0x1c090000 debug user_debug=31 loglevel=9 androidboot.hardware=fvpbase"
+    gArmPlatformTokenSpaceGuid.PcdDefaultBootType|0
+  !else
+    # This is the default config if you don't specify any options
+    gArmPlatformTokenSpaceGuid.PcdDefaultBootDescription|L"Linux from DRAM"
+    gArmPlatformTokenSpaceGuid.PcdDefaultBootDevicePath|L"VenHw(30F57E4A-69CE-4FB7-B7A1-4C7CE49D57A6)/MemoryMapped(0x0,0x80080000,0x81000000)"
+    gEmbeddedTokenSpaceGuid.PcdFdtDevicePaths|L"VenHw(30F57E4A-69CE-4FB7-B7A1-4C7CE49D57A6)/MemoryMapped(0x0,0x83000000,0x83200000)"
+    gArmPlatformTokenSpaceGuid.PcdDefaultBootArgument|L"console=ttyAMA0 earlyprintk=pl011,0x1c090000 debug user_debug=31 androidboot.hardware=fvpbase loglevel=9 root=/dev/vda2"
+    gArmPlatformTokenSpaceGuid.PcdDefaultBootType|2
+  !endif
+!endif
 
   # Use the serial console (ConIn & ConOut) and the Graphic driver (ConOut)
   gArmPlatformTokenSpaceGuid.PcdDefaultConOutPaths|L"VenHw(D3987D4B-971A-435F-8CAF-4967EB627241)/Uart(38400,8,N,1)/VenPcAnsi();VenHw(407B4008-BF5B-11DF-9547-CF16E0D72085)"
