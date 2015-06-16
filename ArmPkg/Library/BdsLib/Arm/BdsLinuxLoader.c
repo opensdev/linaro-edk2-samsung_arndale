@@ -238,14 +238,14 @@ EFI_STATUS
 BdsBootLinuxFdt (
   IN  EFI_DEVICE_PATH_PROTOCOL* LinuxKernelDevicePath,
   IN  EFI_DEVICE_PATH_PROTOCOL* InitrdDevicePath,
-  IN  CONST CHAR8*              CommandLineArguments
+  IN  CONST CHAR8*              CommandLineArguments,
+  IN  EFI_DEVICE_PATH_PROTOCOL* FdtDevicePath
   )
 {
   EFI_STATUS               Status;
   UINT32                   LinuxImageSize;
   UINT32                   InitrdImageBaseSize = 0;
   UINT32                   InitrdImageSize = 0;
-  VOID                     *InstalledFdtBase;
   UINT32                   FdtBlobSize;
   EFI_PHYSICAL_ADDRESS     FdtBlobBase;
   EFI_PHYSICAL_ADDRESS     LinuxImage;
@@ -284,18 +284,13 @@ BdsBootLinuxFdt (
     }
   }
 
-  //
-  // Get the FDT from the Configuration Table.
-  // The FDT will be reloaded in PrepareFdt() to a more appropriate
-  // location for the Linux Kernel.
-  //
-  Status = EfiGetSystemConfigurationTable (&gFdtTableGuid, &InstalledFdtBase);
-  if (EFI_ERROR (Status)) {
-    Print (L"ERROR: Did not get the Device Tree blob (%r).\n", Status);
+  // Load the FDT binary from a device path. The FDT will be reloaded later to a more appropriate location for the Linux kernel.
+  FdtBlobBase = 0;
+  Status = BdsLoadImage (FdtDevicePath, AllocateAnyPages, &FdtBlobBase, &FdtBlobSize);
+  if (EFI_ERROR(Status)) {
+    Print (L"ERROR: Did not find Device Tree blob.\n");
     goto EXIT_FREE_INITRD;
   }
-  FdtBlobBase = (EFI_PHYSICAL_ADDRESS)(UINTN)InstalledFdtBase;
-  FdtBlobSize = fdt_totalsize (InstalledFdtBase);
 
   // Update the Fdt with the Initrd information. The FDT will increase in size.
   // By setting address=0 we leave the memory allocation to the function
