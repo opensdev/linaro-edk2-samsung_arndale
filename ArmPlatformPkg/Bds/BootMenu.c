@@ -51,7 +51,7 @@ DisplayBootOptions (
     BdsLoadOption = LOAD_OPTION_FROM_LINK (Entry);
     Print (L"[%d] %s\n", ++BootOptionCount, BdsLoadOption->Description);
 
-    DEBUG_CODE_BEGIN ();
+    //DEBUG_CODE_BEGIN ();
       CHAR16*                           DevicePathTxt;
       EFI_DEVICE_PATH_TO_TEXT_PROTOCOL* DevicePathToTextProtocol;
       ARM_BDS_LOADER_TYPE               LoaderType;
@@ -88,7 +88,7 @@ DisplayBootOptions (
       }
 
       FreePool (DevicePathTxt);
-    DEBUG_CODE_END ();
+    //DEBUG_CODE_END ();
   }
 }
 
@@ -1041,7 +1041,7 @@ BootMenuMain (
 
       Print(L"[%d] %s\n", OptionCount, BootOption->Description);
 
-      DEBUG_CODE_BEGIN();
+      //DEBUG_CODE_BEGIN();
         CHAR16*                           DevicePathTxt;
         EFI_DEVICE_PATH_TO_TEXT_PROTOCOL* DevicePathToTextProtocol;
         ARM_BDS_LOADER_OPTIONAL_DATA*     OptionalData;
@@ -1100,11 +1100,44 @@ BootMenuMain (
           }
         }
         FreePool(DevicePathTxt);
-      DEBUG_CODE_END();
+      //DEBUG_CODE_END();
 
       OptionCount++;
     }
     BootOptionCount = OptionCount-1;
+
+    //DEBUG_CODE_BEGIN();
+    // Display the FDT Device Paths
+    Print(L"-----------------------\n");
+    {
+      EFI_DEVICE_PATH_FROM_TEXT_PROTOCOL*   EfiDevicePathFromTextProtocol;
+      EFI_DEVICE_PATH_PROTOCOL*             FdtDevicePaths;
+      EFI_DEVICE_PATH_TO_TEXT_PROTOCOL*     DevicePathToTextProtocol;
+      CHAR16*                               DevicePathTxt;
+      EFI_DEVICE_PATH_PROTOCOL*     DefaultFdtDevicePath;
+      UINTN                         FdtDevicePathsSize;
+
+      // Get the default FDT device path
+      Status = gBS->LocateProtocol (&gEfiDevicePathFromTextProtocolGuid, NULL, (VOID **)&EfiDevicePathFromTextProtocol);
+      ASSERT_EFI_ERROR(Status);
+
+      // Get the FDT device path
+      DefaultFdtDevicePath = EfiDevicePathFromTextProtocol->ConvertTextToDevicePath ((CHAR16*)PcdGetPtr(PcdFdtDevicePaths));
+      FdtDevicePathsSize = GetDevicePathSize (DefaultFdtDevicePath);
+      Status = GetEnvironmentVariable ((CHAR16 *)L"Fdt", &gArmGlobalVariableGuid,
+                 DefaultFdtDevicePath, &FdtDevicePathsSize, (VOID **)&FdtDevicePaths);
+
+      // Convert FdtDevicePaths to text
+      if (EFI_ERROR(Status)) {
+        DevicePathTxt = L"not configured";
+      } else {
+        Status = gBS->LocateProtocol (&gEfiDevicePathToTextProtocolGuid, NULL, (VOID **)&DevicePathToTextProtocol);
+        DevicePathTxt = DevicePathToTextProtocol->ConvertDevicePathToText ( FdtDevicePaths, TRUE, TRUE );
+      }
+      Print(L"FDT Device Paths\n\t- %s\n", DevicePathTxt);
+    }
+    Print(L"-----------------------\n");
+    //DEBUG_CODE_END();
 
     // Display the hardcoded Boot entries
     for (Index = 0; Index < BootMainEntryCount; Index++) {
