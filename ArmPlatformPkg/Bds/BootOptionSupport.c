@@ -227,11 +227,6 @@ BootDeviceGetType (
   CHAR16*                 FileName;
   EFI_DEVICE_PATH*        PrevDevicePathNode;
   EFI_DEVICE_PATH*        DevicePathNode;
-  EFI_PHYSICAL_ADDRESS    Image;
-  UINTN                   FileSize;
-  EFI_IMAGE_DOS_HEADER*   DosHeader;
-  UINTN                   PeCoffHeaderOffset;
-  EFI_IMAGE_NT_HEADERS32* NtHeader;
 
   //
   // Check if the last node of the device path is a FilePath node
@@ -261,40 +256,11 @@ BootDeviceGetType (
   } else if (HasFilePathEfiExtension(FileName)) {
     IsEfiApp = TRUE;
   } else {
-    // Check if the file exist
-    Status = BdsLoadImage (DevicePath, AllocateAnyPages, &Image, &FileSize);
-    if (!EFI_ERROR (Status)) {
-
-      DosHeader = (EFI_IMAGE_DOS_HEADER *)(UINTN) Image;
-      if (DosHeader->e_magic == EFI_IMAGE_DOS_SIGNATURE) {
-        //
-        // DOS image header is present,
-        // so read the PE header after the DOS image header.
-        //
-        PeCoffHeaderOffset = DosHeader->e_lfanew;
-      } else {
-        PeCoffHeaderOffset = 0;
-      }
-
-      //
-      // Check PE/COFF image.
-      //
-      NtHeader = (EFI_IMAGE_NT_HEADERS32 *)(UINTN) (Image + PeCoffHeaderOffset);
-      if (NtHeader->Signature != EFI_IMAGE_NT_SIGNATURE) {
-        IsEfiApp = FALSE;
-      } else {
-        IsEfiApp = TRUE;
-      }
-
-      // Free memory
-      gBS->FreePages (Image, EFI_SIZE_TO_PAGES(FileSize));
-    } else {
-      // If we did not manage to open it then ask for the type
-      Print(L"Is an EFI Application? ");
-      Status = GetHIInputBoolean (&IsEfiApp);
-      if (EFI_ERROR(Status)) {
-        return EFI_ABORTED;
-      }
+    // If we did not manage to open it then ask for the type
+    Print(L"Is an EFI Application? ");
+    Status = GetHIInputBoolean (&IsEfiApp);
+    if (EFI_ERROR(Status)) {
+      return EFI_ABORTED;
     }
   }
 
