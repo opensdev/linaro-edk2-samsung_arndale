@@ -39,6 +39,7 @@ UefiMain (
   EFI_LOADED_IMAGE_PROTOCOL   *LoadedImage;
   LINUX_LOADER_OPTIONAL_DATA*  LinuxOptionalData;
   EFI_DEVICE_PATH*             DevicePathKernel;
+  EFI_DEVICE_PATH*             DevicePathFdt;
   EFI_DEVICE_PATH*             InitrdDevicePath;
   CHAR16*                      OptionalDataInitrd;
   CHAR8*                       OptionalDataArguments;
@@ -56,8 +57,9 @@ UefiMain (
       return EFI_UNSUPPORTED;
     }
 
-    // Generate the File Path Node for the Linux Kernel
+    // Generate the File Path Node for the Linux Kernel & Device Tree blob
     DevicePathKernel = FileDevicePath (LoadedImage->DeviceHandle, LINUX_KERNEL_NAME);
+    DevicePathFdt    = FileDevicePath (LoadedImage->DeviceHandle, FDT_NAME);
 
     if (LinuxOptionalData->CmdLineLength > 0) {
       OptionalDataArguments = (CHAR8*)LinuxOptionalData + sizeof(LINUX_LOADER_OPTIONAL_DATA);
@@ -87,7 +89,7 @@ UefiMain (
     }
 
     // Load and Start the Linux Kernel (we should never return)
-    Status = BdsBootLinuxFdt (DevicePathKernel, InitrdDevicePath, OptionalDataArguments);
+    Status = BdsBootLinuxFdt (DevicePathKernel, InitrdDevicePath, OptionalDataArguments, DevicePathFdt);
 
     if ((UINTN)OptionalDataInitrd & 0x1) {
       FreePool (Initrd);

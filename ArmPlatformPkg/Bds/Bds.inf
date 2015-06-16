@@ -36,6 +36,7 @@
   MdeModulePkg/MdeModulePkg.dec
   ArmPkg/ArmPkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
 
 [LibraryClasses]
   BdsLib
@@ -76,6 +77,7 @@
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut
   gArmPlatformTokenSpaceGuid.PcdDefaultConInPaths
   gArmPlatformTokenSpaceGuid.PcdDefaultConOutPaths
+  gEmbeddedTokenSpaceGuid.PcdFdtDevicePaths
 
 [Depex]
   TRUE

@@ -667,6 +667,63 @@ EXIT:
   return Status;
 }
 
+EFI_STATUS
+UpdateFdtPath (
+  IN LIST_ENTRY *BootOptionsList
+  )
+{
+  EFI_STATUS                Status;
+  UINTN                     FdtDevicePathsSize;
+  BDS_SUPPORTED_DEVICE      *SupportedBootDevice;
+  EFI_DEVICE_PATH_PROTOCOL  *FdtDevicePathsNodes;
+  EFI_DEVICE_PATH_PROTOCOL  *FdtDevicePaths;
+
+  Status = SelectBootDevice (&SupportedBootDevice);
+  if (EFI_ERROR(Status)) {
+    Status = EFI_ABORTED;
+    goto EXIT;
+  }
+
+  // Create the specific device path node
+  Status = SupportedBootDevice->Support->CreateDevicePathNode (L"FDT blob", &FdtDevicePathsNodes);
+  if (EFI_ERROR(Status)) {
+    Status = EFI_ABORTED;
+    goto EXIT;
+  }
+
+  if (FdtDevicePathsNodes != NULL) {
+    // Append the Device Path node to the select device path
+    FdtDevicePaths = AppendDevicePath (SupportedBootDevice->DevicePathProtocol, FdtDevicePathsNodes);
+    // Free the FdtDevicePathsNodes created by Support->CreateDevicePathNode()
+    FreePool (FdtDevicePathsNodes);
+    FdtDevicePathsSize = GetDevicePathSize (FdtDevicePaths);
+    Status = gRT->SetVariable (
+                    (CHAR16*)L"Fdt",
+                    &gArmGlobalVariableGuid,
+                    EFI_VARIABLE_RUNTIME_ACCESS | EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
+                    FdtDevicePathsSize,
+                    FdtDevicePaths
+                    );
+    ASSERT_EFI_ERROR(Status);
+  } else {
+    Status = gRT->SetVariable (
+           (CHAR16*)L"Fdt",
+           &gArmGlobalVariableGuid,
+           EFI_VARIABLE_RUNTIME_ACCESS | EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
+           0,
+           NULL
+           );
+    ASSERT_EFI_ERROR(Status);
+  }
+
+EXIT:
+  if (Status == EFI_ABORTED) {
+    Print(L"\n");
+  }
+  FreePool(SupportedBootDevice);
+  return Status;
+}
+
 /**
   Reorder boot options
 
@@ -879,6 +936,7 @@ struct BOOT_MANAGER_ENTRY {
     { L"Add Boot Device Entry", BootMenuAddBootOption },
     { L"Update Boot Device Entry", BootMenuUpdateBootOption },
     { L"Remove Boot Device Entry", BootMenuRemoveBootOption },
+    { L"Update FDT path", UpdateFdtPath },
     { L"Reorder Boot Device Entries", BootMenuReorderBootOptions },
     { L"Set Boot Timeout", BootMenuSetBootTimeout },
 };
