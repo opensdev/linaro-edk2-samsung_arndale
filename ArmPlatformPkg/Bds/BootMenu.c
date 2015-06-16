@@ -51,7 +51,7 @@ DisplayBootOptions (
     BdsLoadOption = LOAD_OPTION_FROM_LINK (Entry);
     Print (L"[%d] %s\n", ++BootOptionCount, BdsLoadOption->Description);
 
-    DEBUG_CODE_BEGIN ();
+    //DEBUG_CODE_BEGIN ();
       CHAR16*                           DevicePathTxt;
       EFI_DEVICE_PATH_TO_TEXT_PROTOCOL* DevicePathToTextProtocol;
       ARM_BDS_LOADER_TYPE               LoaderType;
@@ -88,7 +88,7 @@ DisplayBootOptions (
       }
 
       FreePool (DevicePathTxt);
-    DEBUG_CODE_END ();
+    //DEBUG_CODE_END ();
   }
 }
 
@@ -1041,7 +1041,7 @@ BootMenuMain (
 
       Print(L"[%d] %s\n", OptionCount, BootOption->Description);
 
-      DEBUG_CODE_BEGIN();
+      //DEBUG_CODE_BEGIN();
         CHAR16*                           DevicePathTxt;
         EFI_DEVICE_PATH_TO_TEXT_PROTOCOL* DevicePathToTextProtocol;
         ARM_BDS_LOADER_OPTIONAL_DATA*     OptionalData;
@@ -1100,7 +1100,7 @@ BootMenuMain (
           }
         }
         FreePool(DevicePathTxt);
-      DEBUG_CODE_END();
+      //DEBUG_CODE_END();
 
       OptionCount++;
     }
