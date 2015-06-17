@@ -724,6 +724,7 @@ EXIT:
   return Status;
 }
 
+#if 0 // Remove extra menu options
 /**
   Reorder boot options
 
@@ -928,6 +929,7 @@ BootMenuSetBootTimeout (
 ErrorExit:
   return Status;
 }
+#endif // Remove extra menu options
 
 struct BOOT_MANAGER_ENTRY {
   CONST CHAR16* Description;
@@ -937,8 +939,10 @@ struct BOOT_MANAGER_ENTRY {
     { L"Update Boot Device Entry", BootMenuUpdateBootOption },
     { L"Remove Boot Device Entry", BootMenuRemoveBootOption },
     { L"Update FDT path", UpdateFdtPath },
+#if 0 // Remove extra menu options
     { L"Reorder Boot Device Entries", BootMenuReorderBootOptions },
     { L"Set Boot Timeout", BootMenuSetBootTimeout },
+#endif // Remove extra menu options
 };
 
 EFI_STATUS
