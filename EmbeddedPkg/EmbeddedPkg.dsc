@@ -270,13 +270,6 @@
 
   EmbeddedPkg/Universal/MmcDxe/MmcDxe.inf
 
-  # FDT installation
-  EmbeddedPkg/Drivers/FdtPlatformDxe/FdtPlatformDxe.inf {
-    <LibraryClasses>
-      # It depends on BdsLib that depends on TimerLib
-      TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf
-  }
-
   EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.inf {
     <LibraryClasses>
       # It depends on BdsLib that depends on TimerLib
