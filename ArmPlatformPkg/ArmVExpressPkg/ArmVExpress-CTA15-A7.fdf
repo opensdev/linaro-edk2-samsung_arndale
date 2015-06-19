@@ -105,11 +105,6 @@ READ_LOCK_STATUS   = TRUE
   INF ArmPlatformPkg/ArmVExpressPkg/ArmVExpressDxe/ArmHwDxe.inf
 
   #
-  # FDT installation
-  #
-  INF EmbeddedPkg/Drivers/FdtPlatformDxe/FdtPlatformDxe.inf
-
-  #
   # Multimedia Card Interface
   #
   INF EmbeddedPkg/Universal/MmcDxe/MmcDxe.inf

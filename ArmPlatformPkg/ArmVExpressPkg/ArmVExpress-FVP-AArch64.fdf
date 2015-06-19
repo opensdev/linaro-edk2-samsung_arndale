@@ -203,11 +203,6 @@ READ_LOCK_STATUS   = TRUE
 !endif
 
   #
-  # FDT installation
-  #
-  INF EmbeddedPkg/Drivers/FdtPlatformDxe/FdtPlatformDxe.inf
-
-  #
   # UEFI application (Shell Embedded Boot Loader)
   #
   INF ShellBinPkg/UefiShell/UefiShell.inf

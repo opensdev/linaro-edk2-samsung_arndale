@@ -269,9 +269,6 @@
 
   EmbeddedPkg/Universal/MmcDxe/MmcDxe.inf
 
-  # FDT installation
-  EmbeddedPkg/Drivers/FdtPlatformDxe/FdtPlatformDxe.inf
-
 !ifndef NO_LINUX_LOADER
   EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.inf
   EmbeddedPkg/Drivers/AndroidFastbootTransportUsbDxe/FastbootTransportUsbDxe.inf
