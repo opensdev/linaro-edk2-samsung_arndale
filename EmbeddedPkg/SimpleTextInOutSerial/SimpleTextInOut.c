@@ -420,7 +420,10 @@ ReadKeyStroke (
       }
     }
   } else if (Char < ' ') {
-    if ((Char == CHAR_BACKSPACE) ||
+    if (Char == 0) {
+      // An ESC code on it's own (ie, followed by 0) means someone actually pressed the ESC key
+      Key->UnicodeChar = (CHAR16)ESC;
+    } else if ((Char == CHAR_BACKSPACE) ||
         (Char == CHAR_TAB)       ||
         (Char == CHAR_LINEFEED)  ||
         (Char == CHAR_CARRIAGE_RETURN)) {
