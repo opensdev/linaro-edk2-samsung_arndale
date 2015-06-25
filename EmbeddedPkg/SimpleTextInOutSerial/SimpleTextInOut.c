@@ -71,6 +71,7 @@
 #include <Protocol/SimpleTextOut.h>
 #include <Protocol/DevicePath.h>
 
+#define ESC                       0x1B
 
 #define MODE0_COLUMN_COUNT        80
 #define MODE0_ROW_COUNT           25
@@ -311,7 +312,7 @@ ReadKeyStroke (
   //
   Key->UnicodeChar = 0;
   Key->ScanCode    = SCAN_NULL;
-  if (Char == 0x1b) {
+  if (Char == ESC) {
     SerialPortRead ((UINT8 *)&Char, 1);
     if (Char == '[') {
       SerialPortRead ((UINT8 *)&Char, 1);
@@ -427,7 +428,8 @@ ReadKeyStroke (
       Key->UnicodeChar = (CHAR16)Char;
     }
   } else if (Char == 0x7f) {
-    Key->ScanCode = SCAN_DELETE;
+    Key->ScanCode    = SCAN_NULL;
+    Key->UnicodeChar = (CHAR16)CHAR_BACKSPACE;
   } else {
     Key->UnicodeChar = (CHAR16)Char;
   }
@@ -701,6 +703,12 @@ SetCursorPosition (
 
   if ((Column >= MaxColumn) || (Row >= MaxRow)) {
     return EFI_UNSUPPORTED;
+  }
+
+  if (Column == (Mode->CursorColumn-1)) {
+    // This is the backspace or delete key doing it's stuff
+    CHAR16 delstring[]  = { ESC, '[', '1', 'D', 0 };
+    This->OutputString (This, delstring);
   }
 
   Mode->CursorColumn = (INT32)Column;
