@@ -71,6 +71,9 @@
 #include <Protocol/SimpleTextOut.h>
 #include <Protocol/DevicePath.h>
 
+#define CHAR_ESC                  0x1B
+#define CHAR_SPACE                0x20
+#define CHAR_DEL                  0x7F
 
 #define MODE0_COLUMN_COUNT        80
 #define MODE0_ROW_COUNT           25
@@ -302,16 +305,24 @@ ReadKeyStroke (
 
   SerialPortRead ((UINT8 *)&Char, 1);
 
-  //
-  // Check for ESC sequence. This code is not techincally correct VT100 code.
-  // An illegal ESC sequence represents an ESC and the characters that follow.
-  // This code will eat one or two chars after an escape. This is done to
-  // prevent some complex FIFOing of the data. It is good enough to get
-  // the arrow and delete keys working
-  //
   Key->UnicodeChar = 0;
   Key->ScanCode    = SCAN_NULL;
-  if (Char == 0x1b) {
+
+  switch (Char) {
+  case CHAR_DEL:
+    Key->UnicodeChar = (CHAR16)CHAR_BACKSPACE;
+    Key->ScanCode    = SCAN_NULL;
+    break;
+
+  case CHAR_BACKSPACE:
+  case CHAR_TAB:
+  case CHAR_LINEFEED:
+  case CHAR_CARRIAGE_RETURN:
+      Key->UnicodeChar = (CHAR16)Char;
+      Key->ScanCode    = SCAN_NULL;
+    break;
+
+  case CHAR_ESC:
     SerialPortRead ((UINT8 *)&Char, 1);
     if (Char == '[') {
       SerialPortRead ((UINT8 *)&Char, 1);
@@ -328,110 +339,22 @@ ReadKeyStroke (
       case 'D':
         Key->ScanCode = SCAN_LEFT;
         break;
-      case 'H':
-        Key->ScanCode = SCAN_HOME;
-        break;
-      case 'K':
-      case 'F': // PC ANSI
-        Key->ScanCode = SCAN_END;
-        break;
-      case '@':
-      case 'L':
-        Key->ScanCode = SCAN_INSERT;
-        break;
-      case 'P':
-      case 'X': // PC ANSI
-        Key->ScanCode = SCAN_DELETE;
-        break;
-      case 'U':
-      case '/':
-      case 'G': // PC ANSI
-        Key->ScanCode = SCAN_PAGE_DOWN;
-        break;
-      case 'V':
-      case '?':
-      case 'I': // PC ANSI
-        Key->ScanCode = SCAN_PAGE_UP;
-        break;
-
-      // PCANSI that does not conflict with VT100
-      case 'M':
-        Key->ScanCode = SCAN_F1;
-        break;
-      case 'N':
-        Key->ScanCode = SCAN_F2;
-        break;
-      case 'O':
-        Key->ScanCode = SCAN_F3;
-        break;
-      case 'Q':
-        Key->ScanCode = SCAN_F5;
-        break;
-      case 'R':
-        Key->ScanCode = SCAN_F6;
-        break;
-      case 'S':
-        Key->ScanCode = SCAN_F7;
-        break;
-      case 'T':
-        Key->ScanCode = SCAN_F8;
-        break;
 
       default:
-        Key->UnicodeChar = Char;
         break;
       }
-    } else if (Char == '0') {
-      SerialPortRead ((UINT8 *)&Char, 1);
-      switch (Char) {
-      case 'P':
-        Key->ScanCode = SCAN_F1;
-        break;
-      case 'Q':
-        Key->ScanCode = SCAN_F2;
-        break;
-      case 'w':
-        Key->ScanCode = SCAN_F3;
-        break;
-      case 'x':
-        Key->ScanCode = SCAN_F4;
-        break;
-      case 't':
-        Key->ScanCode = SCAN_F5;
-        break;
-      case 'u':
-        Key->ScanCode = SCAN_F6;
-        break;
-      case 'q':
-        Key->ScanCode = SCAN_F7;
-        break;
-      case 'r':
-        Key->ScanCode = SCAN_F8;
-        break;
-      case 'p':
-        Key->ScanCode = SCAN_F9;
-        break;
-      case 'm':
-        Key->ScanCode = SCAN_F10;
-        break;
-      default :
-        break;
-      }
+    } else {
+      Key->UnicodeChar = 0;
+      Key->ScanCode    = SCAN_ESC;
     }
-  } else if (Char < ' ') {
-    if ((Char == CHAR_BACKSPACE) ||
-        (Char == CHAR_TAB)       ||
-        (Char == CHAR_LINEFEED)  ||
-        (Char == CHAR_CARRIAGE_RETURN)) {
-      // Only let through EFI required control characters
-      Key->UnicodeChar = (CHAR16)Char;
-    }
-  } else if (Char == 0x7f) {
-    Key->ScanCode = SCAN_DELETE;
-  } else {
-    Key->UnicodeChar = (CHAR16)Char;
-  }
+    break;
 
+  default:
+    if ((Char >= CHAR_SPACE) && (Char < CHAR_DEL)) {
+      Key->UnicodeChar = Char;
+      Key->ScanCode    = SCAN_NULL;
+    }
+  }
   return EFI_SUCCESS;
 }
 
@@ -701,6 +624,12 @@ SetCursorPosition (
 
   if ((Column >= MaxColumn) || (Row >= MaxRow)) {
     return EFI_UNSUPPORTED;
+  }
+
+  if (Column == (Mode->CursorColumn-1)) {
+    // This is the backspace or delete key doing it's stuff
+    CHAR16 delstring[]  = { CHAR_ESC, '[', '1', 'D', 0 };
+    This->OutputString (This, delstring);
   }
 
   Mode->CursorColumn = (INT32)Column;
