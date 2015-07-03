@@ -246,7 +246,16 @@ GicV3DxeInitialize (
   ASSERT_PROTOCOL_ALREADY_INSTALLED (NULL, &gHardwareInterruptProtocolGuid);
 
   mGicDistributorBase    = PcdGet32 (PcdGicDistributorBase);
+  if (mGicDistributorBase == 0) {
+    DEBUG ((EFI_D_ERROR, "ArmGicV3Dxe.c:%d: GicV3DxeInitialize: mGicDistributorBase == 0\n", __LINE__));
+    ASSERT_EFI_ERROR (EFI_INVALID_PARAMETER);
+  }
   mGicRedistributorsBase = PcdGet32 (PcdGicRedistributorsBase);
+  if (!FeaturePcdGet (PcdArmGicV3WithV2Legacy) && mGicRedistributorsBase == 0) {
+    DEBUG ((EFI_D_ERROR, "ArmGicV3Dxe.c:%d: GicV3DxeInitialize: mGicRedistributorsBase = 0\n", __LINE__));
+    ASSERT_EFI_ERROR (EFI_INVALID_PARAMETER);
+  }
+
   mGicNumInterrupts      = ArmGicGetMaxNumInterrupts (mGicDistributorBase);
 
   //
