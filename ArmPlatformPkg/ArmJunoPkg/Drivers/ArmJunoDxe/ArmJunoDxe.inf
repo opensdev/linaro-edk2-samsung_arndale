@@ -19,7 +19,6 @@
   ENTRY_POINT                    = ArmJunoEntryPoint
 
 [Sources.common]
-  AcpiTables.c
   ArmJunoDxe.c
   PciEmulation.c
   PciRootBridgeIo.c
@@ -27,7 +26,6 @@
 [Packages]
   ArmPkg/ArmPkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
-  ArmPlatformPkg/ArmVExpressPkg/ArmVExpressPkg.dec
   ArmPlatformPkg/ArmJunoPkg/ArmJuno.dec
   EmbeddedPkg/EmbeddedPkg.dec
   MdePkg/MdePkg.dec
@@ -62,7 +60,6 @@
   gEfiPciIoProtocolGuid
   gEfiPciRootBridgeIoProtocolGuid
   gEfiSimpleFileSystemProtocolGuid
-  gEfiAcpiTableProtocolGuid
 
 [FixedPcd]
   gArmTokenSpaceGuid.PcdSystemMemoryBase
@@ -80,11 +77,6 @@
 
   gArmPlatformTokenSpaceGuid.PcdDefaultBootDevicePath
   gArmPlatformTokenSpaceGuid.PcdDefaultBootArgument
-
-  # PCI Root complex specific PCDs
-  gArmJunoTokenSpaceGuid.PcdPciConfigurationSpaceBaseAddress
-  gArmPlatformTokenSpaceGuid.PcdPciBusMin
-  gArmPlatformTokenSpaceGuid.PcdPciBusMax
 
 [Pcd]
   gEmbeddedTokenSpaceGuid.PcdFdtDevicePaths
