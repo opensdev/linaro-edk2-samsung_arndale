@@ -184,7 +184,7 @@
   gArmPlatformTokenSpaceGuid.PcdDefaultBootDescription|L"zImage with ramdisk.img and board.dtb in NOR Flash"
   gArmPlatformTokenSpaceGuid.PcdDefaultBootDevicePath|L"VenHw(E7223039-5836-41E1-B542-D7EC736C5E59)/zImage"
   gArmPlatformTokenSpaceGuid.PcdDefaultBootInitrdPath|L"VenHw(E7223039-5836-41E1-B542-D7EC736C5E59)/ramdisk.img"
-  gArmPlatformTokenSpaceGuid.PcdDefaultBootArgument|"console=ttyAMA0,38400 earlyprintk debug verbose rootwait root=/dev/mmcblk0p2"
+  gArmPlatformTokenSpaceGuid.PcdDefaultBootArgument|"console=ttyAMA0,38400 rootwait androidboot.hardware=arm-versatileexpress-usb root=/dev/sda2"
   gArmPlatformTokenSpaceGuid.PcdDefaultBootType|2
   gEmbeddedTokenSpaceGuid.PcdFdtDevicePaths|L"VenHw(1F15DA3C-37FF-4070-B471-BB4AF12A724A)/board.dtb"
 
