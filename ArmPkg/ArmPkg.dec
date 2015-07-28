@@ -159,7 +159,7 @@
   # If the fixed FDT address is not available, then it should be loaded below the kernel.
   # The recommendation from the Linux kernel is to have the FDT below 16KB.
   # (see the kernel doc: Documentation/arm/Booting)
-  gArmTokenSpaceGuid.PcdArmLinuxFdtMaxOffset|0x4000|UINT32|0x00000023
+  gArmTokenSpaceGuid.PcdArmLinuxFdtMaxOffset|0x08400000|UINT32|0x00000023
   # The FDT blob must be loaded at a 64bit aligned address.
   gArmTokenSpaceGuid.PcdArmLinuxFdtAlignment|0x8|UINT32|0x00000026
 
