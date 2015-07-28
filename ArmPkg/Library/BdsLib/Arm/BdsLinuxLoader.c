@@ -117,6 +117,12 @@ StartLinux (
   //
   // Start the Linux Kernel
   //
+  DEBUG_CODE_BEGIN();
+  DEBUG ((EFI_D_ERROR, "linux:  address 0x%x\n", LinuxKernel));
+  DEBUG ((EFI_D_ERROR, "linux:  length  0x%x\n", LinuxImageSize));
+  DEBUG ((EFI_D_ERROR, "fdt:    address 0x%x\n", KernelParamsAddress));
+  DEBUG ((EFI_D_ERROR, "fdt:    length  0x%x\n", KernelParamsSize));
+  DEBUG_CODE_END();
 
   // Outside BootServices, so can't use Print();
   DEBUG((EFI_D_ERROR, "\nStarting the kernel:\n\n"));
@@ -299,6 +305,11 @@ BdsBootLinuxFdt (
     Print(L"ERROR: Can not load kernel with FDT. Status=%r\n", Status);
     goto EXIT_FREE_FDT;
   }
+
+  DEBUG_CODE_BEGIN();
+  DEBUG ((EFI_D_ERROR, "initrd: address 0x%x\n", InitrdImage));
+  DEBUG ((EFI_D_ERROR, "initrd: length  0x%x\n", InitrdImageSize));
+  DEBUG_CODE_END();
 
   return StartLinux (LinuxImage, LinuxImageSize, FdtBlobBase, FdtBlobSize, ARM_FDT_MACHINE_TYPE);
 
