@@ -231,20 +231,16 @@ RelocateFdt (
 {
   EFI_STATUS            Status;
   INTN                  Error;
-  UINT64                FdtAlignment;
 
   *RelocatedFdtSize = OriginalFdtSize + FDT_ADDITIONAL_ENTRIES_SIZE;
 
   // If FDT load address needs to be aligned, allocate more space.
-  FdtAlignment = PcdGet32 (PcdArmLinuxFdtAlignment);
-  if (FdtAlignment != 0) {
-    *RelocatedFdtSize += FdtAlignment;
-  }
+  *RelocatedFdtSize += LINUX_FDT_ALIGNMENT;
 
   // Try below a watermark address.
   Status = EFI_NOT_FOUND;
-  if (PcdGet32 (PcdArmLinuxFdtMaxOffset) != 0) {
-    *RelocatedFdt = LINUX_FDT_MAX_OFFSET;
+  if (LINUX_FDT_MAX_OFFSET != 0) {
+    *RelocatedFdt = LINUX_FDT_MAX_ADDR;
     Status = gBS->AllocatePages (AllocateMaxAddress, EfiBootServicesData,
                     EFI_SIZE_TO_PAGES (*RelocatedFdtSize), RelocatedFdt);
     if (EFI_ERROR (Status)) {
@@ -265,8 +261,8 @@ RelocateFdt (
   }
 
   *RelocatedFdtAlloc = *RelocatedFdt;
-  if (FdtAlignment != 0) {
-    *RelocatedFdt = ALIGN (*RelocatedFdt, FdtAlignment);
+  if (LINUX_FDT_ALIGNMENT != 0) {
+    *RelocatedFdt = ALIGN (*RelocatedFdt, LINUX_FDT_ALIGNMENT);
   }
 
   // Load the Original FDT tree into the new region

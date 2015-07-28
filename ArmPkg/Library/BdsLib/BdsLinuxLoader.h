@@ -16,9 +16,35 @@
 #define __BDSLINUXLOADER_H
 
 #define LINUX_UIMAGE_SIGNATURE    0x56190527
-#define LINUX_KERNEL_MAX_OFFSET   (PcdGet64 (PcdSystemMemoryBase) + PcdGet32(PcdArmLinuxKernelMaxOffset))
-#define LINUX_ATAG_MAX_OFFSET     (PcdGet64 (PcdSystemMemoryBase) + PcdGet32(PcdArmLinuxAtagMaxOffset))
-#define LINUX_FDT_MAX_OFFSET      (PcdGet64 (PcdSystemMemoryBase) + PcdGet32(PcdArmLinuxFdtMaxOffset))
+
+#if defined (MDE_CPU_ARM)
+  // On ARM, the kernel recommendations say that the kernel should live before
+  // the 128MiB (0x08000000) boundary.
+  #define LINUX_KERNEL_MAX_OFFSET 0x08000000
+
+  // ATAGS data should  be in the first 16KB
+  #define LINUX_ATAG_MAX_OFFSET   0x00004000
+
+  // The device tree and initrd should live after the 128MiB boundary.
+  #define LINUX_FDT_MAX_OFFSET    0x08400000
+  #define LINUX_INITRD_MAX_OFFSET 0x08400000
+  #define LINUX_FDT_ALIGNMENT     0x00000008
+#elif defined (MDE_CPU_AARCH64)
+  #define LINUX_KERNEL_MAX_OFFSET 0x08000000
+
+  // arm64 Kernels prior to v4.2 required the device tree to reside in the
+  // first 512MB of memory
+  #define LINUX_FDT_MAX_OFFSET    0x20000000
+  #define LINUX_INITRD_MAX_OFFSET 0x20000000
+
+  // Recommendations are to align the FDT to 2MiB
+  #define LINUX_FDT_ALIGNMENT     0x00200000
+#endif
+
+#define LINUX_KERNEL_MAX_ADDR   (PcdGet64 (PcdSystemMemoryBase) + LINUX_KERNEL_MAX_OFFSET)
+#define LINUX_ATAG_MAX_ADDR     (PcdGet64 (PcdSystemMemoryBase) + LINUX_ATAG_MAX_OFFSET)
+#define LINUX_FDT_MAX_ADDR      (PcdGet64 (PcdSystemMemoryBase) + LINUX_FDT_MAX_OFFSET)
+#define LINUX_INITRD_MAX_ADDR   (PcdGet64 (PcdSystemMemoryBase) + LINUX_INITRD_MAX_OFFSET)
 
 // Additional size that could be used for FDT entries added by the UEFI OS Loader
 // Estimation based on: EDID (300bytes) + bootargs (200bytes) + initrd region (20bytes)

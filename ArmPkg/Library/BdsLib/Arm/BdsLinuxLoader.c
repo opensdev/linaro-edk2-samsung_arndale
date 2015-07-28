@@ -74,18 +74,18 @@ StartLinux (
   // physical memory.
   //Note: There is no requirement on the alignment
   if (MachineType != ARM_FDT_MACHINE_TYPE) {
-    if (((UINTN)KernelParamsAddress > LINUX_ATAG_MAX_OFFSET) && (KernelParamsSize < PcdGet32(PcdArmLinuxAtagMaxOffset))) {
-      KernelParamsAddress = (EFI_PHYSICAL_ADDRESS)(UINTN)CopyMem (ALIGN32_BELOW(LINUX_ATAG_MAX_OFFSET - KernelParamsSize), (VOID*)(UINTN)KernelParamsAddress, KernelParamsSize);
+    if (((UINTN)KernelParamsAddress > LINUX_ATAG_MAX_ADDR) && (KernelParamsSize < LINUX_ATAG_MAX_OFFSET)) {
+      KernelParamsAddress = (EFI_PHYSICAL_ADDRESS)(UINTN)CopyMem (ALIGN32_BELOW(LINUX_ATAG_MAX_ADDR - KernelParamsSize), (VOID*)(UINTN)KernelParamsAddress, KernelParamsSize);
     }
   } else {
-    if (((UINTN)KernelParamsAddress > LINUX_FDT_MAX_OFFSET) && (KernelParamsSize < PcdGet32(PcdArmLinuxFdtMaxOffset))) {
-      KernelParamsAddress = (EFI_PHYSICAL_ADDRESS)(UINTN)CopyMem (ALIGN32_BELOW(LINUX_FDT_MAX_OFFSET - KernelParamsSize), (VOID*)(UINTN)KernelParamsAddress, KernelParamsSize);
+    if (((UINTN)KernelParamsAddress > LINUX_FDT_MAX_ADDR) && (KernelParamsSize < LINUX_FDT_MAX_OFFSET)) {
+      KernelParamsAddress = (EFI_PHYSICAL_ADDRESS)(UINTN)CopyMem (ALIGN32_BELOW(LINUX_FDT_MAX_ADDR - KernelParamsSize), (VOID*)(UINTN)KernelParamsAddress, KernelParamsSize);
     }
   }
 
-  if ((UINTN)LinuxImage > LINUX_KERNEL_MAX_OFFSET) {
+  if ((UINTN)LinuxImage > LINUX_KERNEL_MAX_ADDR) {
     //Note: There is no requirement on the alignment
-    LinuxKernel = (LINUX_KERNEL)CopyMem (ALIGN32_BELOW(LINUX_KERNEL_MAX_OFFSET - LinuxImageSize), (VOID*)(UINTN)LinuxImage, LinuxImageSize);
+    LinuxKernel = (LINUX_KERNEL)CopyMem (ALIGN32_BELOW(LINUX_KERNEL_MAX_ADDR - LinuxImageSize), (VOID*)(UINTN)LinuxImage, LinuxImageSize);
   } else {
     LinuxKernel = (LINUX_KERNEL)(UINTN)LinuxImage;
   }
@@ -174,7 +174,7 @@ BdsBootLinuxAtag (
   PERF_START (NULL, "BDS", NULL, 0);
 
   // Load the Linux kernel from a device path
-  LinuxImage = LINUX_KERNEL_MAX_OFFSET;
+  LinuxImage = LINUX_KERNEL_MAX_ADDR;
   Status = BdsLoadImage (LinuxKernelDevicePath, AllocateMaxAddress, &LinuxImage, &LinuxImageSize);
   if (EFI_ERROR(Status)) {
     Print (L"ERROR: Did not find Linux kernel.\n");
@@ -183,7 +183,7 @@ BdsBootLinuxAtag (
 
   if (InitrdDevicePath) {
     // Load the initrd near to the Linux kernel
-    InitrdImageBase = LINUX_FDT_MAX_OFFSET;
+    InitrdImageBase = LINUX_INITRD_MAX_ADDR;
     Status = BdsLoadImage (InitrdDevicePath, AllocateMaxAddress, &InitrdImageBase, &InitrdImageBaseSize);
     if (Status == EFI_OUT_OF_RESOURCES) {
       Status = BdsLoadImage (InitrdDevicePath, AllocateAnyPages, &InitrdImageBase, &InitrdImageBaseSize);
@@ -261,7 +261,7 @@ BdsBootLinuxFdt (
   PERF_START (NULL, "BDS", NULL, 0);
 
   // Load the Linux kernel from a device path
-  LinuxImage = LINUX_KERNEL_MAX_OFFSET;
+  LinuxImage = LINUX_KERNEL_MAX_ADDR;
   Status = BdsLoadImage (LinuxKernelDevicePath, AllocateMaxAddress, &LinuxImage, &LinuxImageSize);
   if (EFI_ERROR(Status)) {
     Print (L"ERROR: Did not find Linux kernel.\n");
@@ -269,7 +269,7 @@ BdsBootLinuxFdt (
   }
 
   if (InitrdDevicePath) {
-    InitrdImageBase = LINUX_FDT_MAX_OFFSET;
+    InitrdImageBase = LINUX_INITRD_MAX_ADDR;
     Status = BdsLoadImage (InitrdDevicePath, AllocateMaxAddress, &InitrdImageBase, &InitrdImageBaseSize);
     if (Status == EFI_OUT_OF_RESOURCES) {
       Status = BdsLoadImage (InitrdDevicePath, AllocateAnyPages, &InitrdImageBase, &InitrdImageBaseSize);

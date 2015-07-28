@@ -116,8 +116,6 @@
   # BdsLib
   #
   gArmTokenSpaceGuid.PcdArmMachineType|0|UINT32|0x0000001E
-  # The compressed Linux kernel is expected to be under 128MB from the beginning of the System Memory
-  gArmTokenSpaceGuid.PcdArmLinuxKernelMaxOffset|0x08000000|UINT32|0x0000001F
   # Maximum file size for TFTP servers that do not support 'tsize' extension
   gArmTokenSpaceGuid.PcdMaxTftpFileSize|0x01000000|UINT32|0x00000000
 
@@ -152,16 +150,6 @@
 
   # By default we do not do a transition to non-secure mode
   gArmTokenSpaceGuid.PcdArmNonSecModeTransition|0x0|UINT32|0x0000003E
-
-  # The Linux ATAGs are expected to be under 0x4000 (16KB) from the beginning of the System Memory
-  gArmTokenSpaceGuid.PcdArmLinuxAtagMaxOffset|0x4000|UINT32|0x00000020
-
-  # If the fixed FDT address is not available, then it should be loaded below the kernel.
-  # The recommendation from the Linux kernel is to have the FDT below 16KB.
-  # (see the kernel doc: Documentation/arm/Booting)
-  gArmTokenSpaceGuid.PcdArmLinuxFdtMaxOffset|0x08400000|UINT32|0x00000023
-  # The FDT blob must be loaded at a 64bit aligned address.
-  gArmTokenSpaceGuid.PcdArmLinuxFdtAlignment|0x8|UINT32|0x00000026
 
   # Non Secure Access Control Register
   # - BIT15 : NSASEDIS - Disable Non-secure Advanced SIMD functionality
@@ -201,13 +189,6 @@
   # Other modes include using SP0 or switching to Aarch32, but these are
   # not currently supported.
   gArmTokenSpaceGuid.PcdArmNonSecModeTransition|0x3c9|UINT32|0x0000003E
-  # If the fixed FDT address is not available, then it should be loaded above the kernel.
-  # The recommendation from the AArch64 Linux kernel is to have the FDT below 512MB.
-  # (see the kernel doc: Documentation/arm64/booting.txt)
-  gArmTokenSpaceGuid.PcdArmLinuxFdtMaxOffset|0x20000000|UINT32|0x00000023
-  # The FDT blob must be loaded at a 2MB aligned address.
-  gArmTokenSpaceGuid.PcdArmLinuxFdtAlignment|0x00200000|UINT32|0x00000026
-
 
 #
 # These PCDs are also defined as 'PcdsDynamic' or 'PcdsPatchableInModule' to be
