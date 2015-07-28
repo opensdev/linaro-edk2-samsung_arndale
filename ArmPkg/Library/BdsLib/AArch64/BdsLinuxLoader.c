@@ -228,12 +228,12 @@ BdsBootLinuxFdt (
   //
 
   // Try to put the kernel at the start of RAM so as to give it access to all memory.
-  // If that fails fall back to try loading it within LINUX_KERNEL_MAX_OFFSET of memory start.
+  // If that fails fall back to try loading it within LINUX_KERNEL_MAX_ADDR of memory start.
   LinuxImage = PcdGet64 (PcdSystemMemoryBase) + 0x80000;
   Status = BdsLoadImage (LinuxKernelDevicePath, AllocateAddress, &LinuxImage, &LinuxImageSize);
   if (EFI_ERROR(Status)) {
     // Try again but give the loader more freedom of where to put the image.
-    LinuxImage = LINUX_KERNEL_MAX_OFFSET;
+    LinuxImage = LINUX_KERNEL_MAX_ADDR;
     Status = BdsLoadImage (LinuxKernelDevicePath, AllocateMaxAddress, &LinuxImage, &LinuxImageSize);
     if (EFI_ERROR(Status)) {
       Print (L"ERROR: Did not find Linux kernel (%r).\n", Status);
@@ -247,7 +247,7 @@ BdsBootLinuxFdt (
   }
 
   if (InitrdDevicePath) {
-    InitrdImageBase = LINUX_KERNEL_MAX_OFFSET;
+    InitrdImageBase = LINUX_INITRD_MAX_ADDR;
     Status = BdsLoadImage (InitrdDevicePath, AllocateMaxAddress, &InitrdImageBase, &InitrdImageBaseSize);
     if (Status == EFI_OUT_OF_RESOURCES) {
       Status = BdsLoadImage (InitrdDevicePath, AllocateAnyPages, &InitrdImageBase, &InitrdImageBaseSize);
@@ -270,7 +270,7 @@ BdsBootLinuxFdt (
 
   // Load the FDT binary from a device path.
   // The FDT will be reloaded later to a more appropriate location for the Linux kernel.
-  FdtBlobBase = LINUX_KERNEL_MAX_OFFSET;
+  FdtBlobBase = LINUX_KERNEL_MAX_ADDR;
   Status = BdsLoadImage (FdtDevicePath, AllocateMaxAddress, &FdtBlobBase, &FdtBlobSize);
   if (EFI_ERROR(Status)) {
     Print (L"ERROR: Did not find Device Tree blob (%r).\n", Status);

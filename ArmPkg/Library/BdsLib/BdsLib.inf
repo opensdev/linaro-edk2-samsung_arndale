@@ -91,14 +91,7 @@
 
 [FixedPcd]
   gArmTokenSpaceGuid.PcdArmMachineType
-  gArmTokenSpaceGuid.PcdArmLinuxFdtMaxOffset
-  gArmTokenSpaceGuid.PcdArmLinuxFdtAlignment
-  gArmTokenSpaceGuid.PcdArmLinuxKernelMaxOffset
-
   gArmTokenSpaceGuid.PcdMaxTftpFileSize
-
-[FixedPcd.ARM]
-  gArmTokenSpaceGuid.PcdArmLinuxAtagMaxOffset
 
 [Pcd.AARCH64]
   gArmTokenSpaceGuid.PcdGicDistributorBase

@@ -128,7 +128,7 @@ PrepareAtagList (
   EFI_PHYSICAL_ADDRESS        AtagStartAddress;
   BDS_SYSTEM_MEMORY_RESOURCE  *Resource;
 
-  AtagStartAddress = LINUX_ATAG_MAX_OFFSET;
+  AtagStartAddress = LINUX_ATAG_MAX_ADDR;
   Status = gBS->AllocatePages (AllocateMaxAddress, EfiBootServicesData, EFI_SIZE_TO_PAGES(ATAG_MAX_SIZE), &AtagStartAddress);
   if (EFI_ERROR(Status)) {
     DEBUG ((EFI_D_WARN, "Warning: Failed to allocate Atag at 0x%lX (%r). The Atag will be allocated somewhere else in System Memory.\n", AtagStartAddress, Status));
