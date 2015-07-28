@@ -183,7 +183,7 @@ BdsBootLinuxAtag (
 
   if (InitrdDevicePath) {
     // Load the initrd near to the Linux kernel
-    InitrdImageBase = LINUX_KERNEL_MAX_OFFSET;
+    InitrdImageBase = LINUX_FDT_MAX_OFFSET;
     Status = BdsLoadImage (InitrdDevicePath, AllocateMaxAddress, &InitrdImageBase, &InitrdImageBaseSize);
     if (Status == EFI_OUT_OF_RESOURCES) {
       Status = BdsLoadImage (InitrdDevicePath, AllocateAnyPages, &InitrdImageBase, &InitrdImageBaseSize);
@@ -269,7 +269,7 @@ BdsBootLinuxFdt (
   }
 
   if (InitrdDevicePath) {
-    InitrdImageBase = LINUX_KERNEL_MAX_OFFSET;
+    InitrdImageBase = LINUX_FDT_MAX_OFFSET;
     Status = BdsLoadImage (InitrdDevicePath, AllocateMaxAddress, &InitrdImageBase, &InitrdImageBaseSize);
     if (Status == EFI_OUT_OF_RESOURCES) {
       Status = BdsLoadImage (InitrdDevicePath, AllocateAnyPages, &InitrdImageBase, &InitrdImageBaseSize);
