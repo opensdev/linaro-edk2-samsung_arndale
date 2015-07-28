@@ -128,6 +128,12 @@ StartLinux (
   //
   // Start the Linux Kernel
   //
+  DEBUG_CODE_BEGIN();
+  DEBUG ((EFI_D_ERROR, "linux:  address 0x%x\n", LinuxKernel));
+  DEBUG ((EFI_D_ERROR, "linux:  length  0x%x\n", LinuxImageSize));
+  DEBUG ((EFI_D_ERROR, "fdt:    address 0x%x\n", FdtBlobBase));
+  DEBUG ((EFI_D_ERROR, "fdt:    length  0x%x\n", FdtBlobSize));
+  DEBUG_CODE_END();
 
   // x1-x3 are reserved (set to zero) for future use.
   LinuxKernel ((UINTN)FdtBlobBase, 0, 0, 0);
@@ -330,6 +336,11 @@ BdsBootLinuxFdt (
     Print(L"ERROR: Can not load Linux kernel with Device Tree. Status=0x%X\n", Status);
     goto EXIT_FREE_FDT;
   }
+
+  DEBUG_CODE_BEGIN();
+  DEBUG ((EFI_D_ERROR, "initrd: address 0x%x\n", InitrdImage));
+  DEBUG ((EFI_D_ERROR, "initrd: length  0x%x\n", InitrdImageSize));
+  DEBUG_CODE_END();
 
   return StartLinux (LinuxImage, LinuxImageSize, FdtBlobBase, FdtBlobSize);
 
