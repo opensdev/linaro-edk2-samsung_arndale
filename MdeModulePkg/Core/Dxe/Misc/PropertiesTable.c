@@ -1182,11 +1182,7 @@ InsertImageRecord (
 
   SetPropertiesTableSectionAlignment (SectionAlignment);
   if ((SectionAlignment & (SIZE_4KB - 1)) != 0) {
-    DEBUG ((EFI_D_ERROR, "!!!!!!!!  InsertImageRecord - Section Alignment(0x%x) is not 4K  !!!!!!!!\n", SectionAlignment));
     PdbPointer = PeCoffLoaderGetPdbPointer ((VOID*) (UINTN) ImageAddress);
-    if (PdbPointer != NULL) {
-      DEBUG ((EFI_D_ERROR, "!!!!!!!!  Image - %a  !!!!!!!!\n", PdbPointer));
-    }
     goto Finish;
   }
 
