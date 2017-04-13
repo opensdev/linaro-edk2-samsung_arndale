@@ -243,6 +243,8 @@ InitPciDev (
   UINT64      AttrSupports;
   EFI_STATUS  Status;
 
+  *PciRegBase = 0;
+
   // Get controller's current attributes
   Status = PciIo->Attributes (
                     PciIo,
